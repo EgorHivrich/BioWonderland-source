@@ -1,0 +1,15 @@
+[Unit]
+
+Description=Recruiting bot
+After=network.target
+
+[Service]
+
+ExecStart=/usr/bin/python3 ~/server/recruiter-bot/source/main.py
+WorkingDirectory=~/server/recruiter-bot/source
+Restart=always
+User=root
+
+[Install]
+
+WantedBy=multu-user.target
