@@ -9,6 +9,6 @@ context: TeleBot = TeleBot("8738837682:AAHRka74Olp0_dCqG9btSyktThkn79yjr8Y")
 	commands = ['start', 'help']
 )
 def handle_start_message(message : Message) -> None:
-	context.send_message(message.chat.id, WELCOME_TEXT.fixed, reply_markup = WELCOME_TEXT_MARKUP)
+	context.send_message(message.chat.id, WELCOME_TEXT.fixed, "MarkdownV2", reply_markup = WELCOME_TEXT_MARKUP)
 
 if __name__ == "__main__": context.infinity_polling()
