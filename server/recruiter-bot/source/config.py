@@ -1,17 +1,37 @@
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-WELCOME_TEXT: str = """
-Привет! Сейчас мы находимся в поисках разработкиков для нашего проекта BioWonderland.
+class MarkdownV2Text:
 
-**Кого мы берём в наш проект?**
-    • Программистов
-    • 3D моделеров, аниматоров
-    • Композиторов
-    • Сценаристов и актёров озвучки
+    def __init__(self,
+                string: str
+    ) -> None:
+        
+        for character in string:
+            if character in self._RESERVED: self._fixed += "\\"
+            self._fixed += character
+        
+        print(f"fixed string: {self.fixed}")
 
-Если ты умеешь что-то из этого списка, то мы будем тебе рады.
-Дополнительная информация: /info
-"""
+    @property
+    def fixed(self) -> str: return self._fixed
+
+    _fixed: str = ""
+    _RESERVED: list[str] = ['.', ',', '!', '-']
+
+WELCOME_TEXT: MarkdownV2Text = MarkdownV2Text("""
+*Привет 👋✨*
+Сейчас мы находимся в поисках разработчиков для нашего проекта DreamToy Fabric. 🌌🧬
+
+> *👇 Кого мы берём в наш проект?*
+>
+>   • Программистов 💻👨‍💻
+>   • 3D‑моделлеров, аниматоров 🖥️🎬
+>   • Композиторов 🎵
+>   • Сценаристов и актёров озвучки 📜🎤
+
+Если ты умеешь что‑то из этого списка, то мы будем тебе рады! 
+🔎 __Дополнительная информация:__ /info 
+""")
 
 WELCOME_TEXT_MARKUP: InlineKeyboardMarkup = InlineKeyboardMarkup().add(
     InlineKeyboardButton(text = "Вступить в разработку", url = "https://t.me/+Syx_PZhJ5rVlODEy")
