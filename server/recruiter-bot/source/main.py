@@ -1,29 +1,45 @@
 from telebot import TeleBot
-from telebot.types import Message
+from config import Config, MarkdownV2Text, JsonConfigDeserializer
 
-from config import *
+from telebot.types import InlineKeyboardMarkup, Message
 
-context: TeleBot = TeleBot(CONFIG.token)
+class ConfigDeserializer:
+    
+	@staticmethod
+	def deserialize(filePath: str,
+				   decoder: object
+	) -> Config:
+
+		with open(filePath, "r+") as file:
+			deserializedConfig: Config = decoder.decode(file.read())
+
+		return deserializedConfig
+
+config: Config = ConfigDeserializer.deserialize("../config.json", JsonConfigDeserializer())
+context: TeleBot = TeleBot(config.token)
+
+def send_callback_on_message(message: Message, id: int) -> None:
+
+	print(message.text)
+	callback: list[MarkdownV2Text, InlineKeyboardMarkup] = None
+
+	for command in config.objects.keys():
+		if message.text.removesuffix(" ") == command: callback = config.objects[command]; break
+
+	context.send_message(message.chat.id, MarkdownV2Text(callback[0]).fixed, "MarkdownV2", reply_markup = callback[1])
+
 
 @context.message_handler (
 	func = lambda message: True
 )
 def handle_text_messages(message: Message) -> None:
-	print(message.text)
-	callback: list[MarkdownV2Text, InlineKeyboardMarkup] = None
-
-	for command in CONFIG.objects.keys():
-		if message.text.removesuffix(" ") == command: callback = CONFIG.objects[command]; break
-
-	context.send_message(message.chat.id, callback[0].fixed, "MarkdownV2", reply_markup = callback[1])
+	send_callback_on_message(message, message.chat.id)
 
 
 @context.callback_query_handler (
 	func = lambda message: True
 )
 def handle_questions(message: Message) -> None:
-	print(message.data, "Hello world")
-	context.send_message(message.from_user.id, QUESTIONS_ANSWERS[message.data].fixed, "MarkdownV2")
-
+	send_callback_on_message(message, message.from_user.id)
 
 if __name__ == "__main__": context.infinity_polling()
